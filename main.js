@@ -1,7 +1,6 @@
-import searchForRick from "scraper.js"
-
 // Library constants
 const discord = require('discord.js');
+const scraper = require('./scraper.js')
 const readline = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
@@ -28,12 +27,20 @@ client.once('ready', () => {
 client.on('message', message => {
     // return if message 
     if (message.author.bot) return;
-    // check if message includes a rick roll in it
-    if (message.attachments.size > 0) {
-        for (attachment in message.attachments.array) {
-            if (searchForRick(attachment.url)) {
-                message.channel.send('https://youtu.be/Ux0YNqhaw0I')
-            }
+    // check if there's a link in the message
+    if (message.content.includes('https://')) {
+        var content = message.content.toString();
+        var startIndex = content.indexOf('https://');
+        // Find a better way to do this later
+        var endIndex = content.indexOf(' ', startIndex);
+        // change endIndex to end of content if there is no ' '
+        if (endIndex == -1) {
+            endIndex = content.length - 1;
+        }
+        // search for rickrolls in the link
+        if (scraper.searchForRick(content.substring(startIndex, endIndex)) || scraper.searchForRick(content)) {
+            // mention the user who posted the rick roll
+            message.channel.send("<@"+ message.author.id + '>' + ' https://youtu.be/Ux0YNqhaw0I');
         }
     }
-})
+});

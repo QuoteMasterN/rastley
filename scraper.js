@@ -3,8 +3,8 @@ const axios = require('axios').default;
 const fs = require('fs') , filename = "knownLinks.txt";
 
 // initialize array from knownLinks
-var knownLinks = fs.readFile(filename).toString().split("\n");
-
+var knownLinks = []
+knownLinks = fs.readFileSync(filename, 'utf8').split('\n');
 /**
  * Scrapes a link and returns true if the link is a rick roll or contains a rick roll
  * @param {string} link Link to look for a rick roll in or to check if it's a rick roll
@@ -21,11 +21,12 @@ function searchForRick(link) {
     axios.get(link)
         .catch(function (error) {
             // handle error
-            console.log(error);
+            console.log("Link broke: " + link);
+            return;
         })
         .then(function (response) {
             // scrape all embedded links on a page
-            foundLinks = response.toString().split('src=')
+            if (response != null) foundLinks = response.toString().split('src=');   
         });
     
     // filter links stored in foundLinks and check if they are in known links
@@ -51,6 +52,11 @@ function searchForRick(link) {
  * @returns {boolean} 
  */
 function checkLink(link) {
-    if (link in knownLinks) return true;
+    for (knownLink in knownLinks) {
+        if (link == knownLinks[knownLink]) return true;
+    }
     return false;
 };
+
+// export searchForRick function
+module.exports.searchForRick = searchForRick;
