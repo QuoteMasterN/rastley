@@ -1,6 +1,7 @@
+import searchForRick from "scraper.js"
+
 // Library constants
 const discord = require('discord.js');
-const axios = require('axios').default;
 const readline = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
