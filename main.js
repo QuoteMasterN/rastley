@@ -25,3 +25,15 @@ client.once('ready', () => {
     console.log('Rastley is online!');
 });
 
+client.on('message', message => {
+    // return if message 
+    if (message.author.bot) return;
+    // check if message includes a rick roll in it
+    if (message.attachments.size > 0) {
+        for (attachment in message.attachments.array) {
+            if (searchForRick(attachment.url)) {
+                message.channel.send('https://youtu.be/Ux0YNqhaw0I')
+            }
+        }
+    }
+})
